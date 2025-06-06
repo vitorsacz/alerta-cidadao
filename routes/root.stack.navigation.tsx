@@ -4,6 +4,11 @@ import HomeScreen from "../app/pages/home/home.screen";
 import PerfilScreen from "../app/pages/perfil/perfil.screen";
 import LoginScreen from "../app/pages/login/login.screen";
 import CadastroScreen from "../app/pages/login/cadastro.screen";
+import RecuperarSenhaScreen from "../app/pages/login/recuperar.senha.screen";
+import { ResourceInterface } from "../app/components/model/resourse.interface";
+import ResourceScreen from "../app/pages/resource/resource.screen";
+import AbrigosScreen from "../app/pages/resource/abrigos.screen";
+import CadastrarAbrigoForm from "../app/pages/resource/abrigos.form";
 
 
 export type RootStackParamList = {
@@ -12,6 +17,10 @@ export type RootStackParamList = {
   Perfil: undefined;
   Login: undefined;
   Cadastro: undefined;
+  RecuperarSenha: undefined;
+  Resource: { resource: ResourceInterface };
+  Abrigos: { resource: ResourceInterface };
+  CadastrarAbrigo: undefined; 
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -36,6 +45,18 @@ export function RootStackNavigation() {
         />
         <Stack.Screen
             name="Cadastro" component={CadastroScreen}
+        />
+        <Stack.Screen
+            name="RecuperarSenha" component={RecuperarSenhaScreen}
+        />
+        <Stack.Screen
+            name="Resource" component={ResourceScreen}
+        />
+        <Stack.Screen
+            name="Abrigos" component={AbrigosScreen}
+        />  
+        <Stack.Screen
+            name="CadastrarAbrigo" component={CadastrarAbrigoForm} 
         />
 
     </Stack.Navigator>

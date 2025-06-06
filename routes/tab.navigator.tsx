@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../app/pages/home/home.screen";
 import PerfilScreen from "../app/pages/perfil/perfil.screen";
+import CadastrarAbrigoForm from "../app/pages/resource/abrigos.form";
 
 const Tab = createBottomTabNavigator();
 
@@ -16,12 +17,14 @@ export default function TabNavigator() {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Perfil") {
             iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Abrigo") {
+            iconName = focused ? "document" : "document-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarStyle: {
-            backgroundColor: '#000',
+            backgroundColor: '#0156a7',
             borderTopColor: '#242424', 
           },
           tabBarActiveTintColor: '#FFFFFF', 
@@ -33,6 +36,12 @@ export default function TabNavigator() {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Tab.Screen
+        name="Abrigo"
+        component={CadastrarAbrigoForm}
         options={{ headerShown: false }}
       />
 
