@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigator from "./tab.navigator";
-import HomeScreen from "../app/pages/home/home.screen";
 import PerfilScreen from "../app/pages/perfil/perfil.screen";
 import LoginScreen from "../app/pages/login/login.screen";
 import CadastroScreen from "../app/pages/login/cadastro.screen";
@@ -9,6 +8,7 @@ import { ResourceInterface } from "../app/components/model/resourse.interface";
 import ResourceScreen from "../app/pages/resource/resource.screen";
 import AbrigosScreen from "../app/pages/resource/abrigos.screen";
 import CadastrarAbrigoForm from "../app/pages/resource/abrigos.form";
+import HomeScreen from "../app/pages/home/home.screen";
 
 
 export type RootStackParamList = {
