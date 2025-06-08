@@ -58,6 +58,7 @@ const LoginScreen = ({ navigation }: Props) => {
   });
 
   const onSubmit = (data: FormData) => {
+    navigation.navigate("TabNavigation", { screen: "Home" });
     console.log("Dados de login:", data);
   };
 
@@ -141,7 +142,6 @@ const LoginScreen = ({ navigation }: Props) => {
             </TouchableOpacity>
           </View>
 
-          <Button title="Login" onPress={handleHome} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
