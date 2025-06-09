@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,14 +8,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Button,
+  ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../../../routes/root.stack.navigation";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../../routes/root.stack.navigation";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import ModalError from "../../components/modal/modal.error";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -26,7 +27,6 @@ interface Props {
   navigation: LoginScreenNavigationProp;
 }
 
-// Define o schema de validação do formulário
 const schema = yup.object({
   email: yup
     .string()
@@ -38,13 +38,17 @@ const schema = yup.object({
     .required("Senha é obrigatória"),
 });
 
-// Define o tipo dos dados do formulário
 type FormData = {
   email: string;
   password: string;
 };
 
 const LoginScreen = ({ navigation }: Props) => {
+  const auth = getAuth();
+  const [loading, setLoading] = useState(false);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -57,17 +61,27 @@ const LoginScreen = ({ navigation }: Props) => {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    navigation.navigate("TabNavigation", { screen: "Home" });
-    console.log("Dados de login:", data);
+  const onSubmit = async (data: FormData) => {
+    setLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      console.log("Usuário logado:", userCredential.user.email);
+      navigation.navigate("TabNavigation", { screen: "Home" });
+    } catch (error: any) {
+      console.error("Erro no login:", error.message);
+      setErrorMessage("E-mail ou senha inválidos. Tente novamente.");
+      setErrorModalVisible(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCadastro = () => {
     navigation.navigate("Cadastro");
-  };
-
-  const handleHome = () => {
-    navigation.navigate("TabNavigation", { screen: "Home" });
   };
 
   return (
@@ -131,9 +145,16 @@ const LoginScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={styles.loginButton}
             onPress={handleSubmit(onSubmit)}
+            disabled={loading}
           >
-            <Text style={styles.loginButtonText}>Entrar</Text>
+            <Text style={styles.loginButtonText}>
+              {loading ? "Entrando..." : "Entrar"}
+            </Text>
           </TouchableOpacity>
+
+          {loading && (
+            <ActivityIndicator size="large" color="#007BFF" style={{ marginTop: 10 }} />
+          )}
 
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>Não tem uma conta? </Text>
@@ -141,9 +162,14 @@ const LoginScreen = ({ navigation }: Props) => {
               <Text style={styles.signupLink}>Cadastre-se</Text>
             </TouchableOpacity>
           </View>
-
         </View>
       </ScrollView>
+
+      <ModalError
+        visible={errorModalVisible}
+        message={errorMessage}
+        onClose={() => setErrorModalVisible(false)}
+      />
     </KeyboardAvoidingView>
   );
 };

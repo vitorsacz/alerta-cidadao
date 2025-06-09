@@ -15,6 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { RootStackParamList } from "../../../routes/root.stack.navigation";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 type CadastroScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -25,7 +26,6 @@ interface Props {
   navigation: CadastroScreenNavigationProp;
 }
 
-// Esquema de validação em português
 const schema = yup.object({
   fullName: yup
     .string()
@@ -58,6 +58,7 @@ type FormData = {
 
 const CadastroScreen = ({ navigation }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const auth = getAuth();
 
   const {
     control,
@@ -73,12 +74,17 @@ const CadastroScreen = ({ navigation }: Props) => {
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    console.log("Dados de cadastro:", data);
-    setTimeout(() => {
+    try {
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Usuário criado com sucesso!");
+      navigation.navigate("Login");
+    } catch (error: any) {
+      console.error("Erro ao criar conta:", error.message);
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   const handleLogin = () => {

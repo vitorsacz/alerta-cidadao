@@ -10,9 +10,12 @@ import {
   Switch,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../firebaseConfig";
+
 
 interface ProfileScreenProps {
-  navigation?: any; 
+  navigation?: any;
 }
 
 interface MenuItem {
@@ -23,7 +26,7 @@ interface MenuItem {
 }
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
-  const [isDarkTheme, setIsDarkTheme] = useState(false); 
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   const user = {
     name: "Lorenzo Vaz",
@@ -34,9 +37,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   const toggleTheme = () => setIsDarkTheme((previousState) => !previousState);
 
-  const handleLogout = () => {
-    navigation?.navigate("Login");
-    console.log("Usuário clicou em Sair da conta");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation?.navigate("Login"); // Redireciona para tela de login
+      console.log("Logout realizado com sucesso.");
+    } catch (error) {
+      console.error("Erro ao sair da conta:", error);
+    }
   };
 
   const menuItems: MenuItem[] = [
@@ -70,7 +78,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-
         <View style={styles.bemvindoContainer}>
           <Text style={styles.bemvindoText}>
             Bem-vindo ao seu perfil, {user.name}!
@@ -128,7 +135,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F7FAFC",
-    paddingTop: 20, 
+    paddingTop: 20,
   },
   bemvindoContainer: {
     padding: 16,
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
-    overflow: "hidden", 
+    overflow: "hidden",
   },
   menuItem: {
     flexDirection: "row",
